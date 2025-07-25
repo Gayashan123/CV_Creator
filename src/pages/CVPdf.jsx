@@ -360,7 +360,7 @@ const getProficiencyWidth = (proficiency) => {
   }
 };
 
-const CVPDF = ({ formData }) => {
+const Cvpdf = ({ formData }) => {
   const {
     personalDetails,
     education,
@@ -663,4 +663,4 @@ const CVPDF = ({ formData }) => {
   );
 };
 
-export default CVPDF;
+export default Cvpdf;
