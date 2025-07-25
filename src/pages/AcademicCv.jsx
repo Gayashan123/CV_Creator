@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import CVPreview from "./CVPreview";
+import CVPreview from "./CvPreview";
 import { PDFDownloadLink } from '@react-pdf/renderer';
-import CVPDF from './CVPdf';
+import CVPdf from './CVPdf';
 
 // Theme palette
 const COLOR_THEMES = [
@@ -30,6 +30,7 @@ const COLOR_THEMES = [
     heading: "text-[#111827]"
   }
 ];
+
 const defaultFormData = {
   personalDetails: {
     fullName: "",
@@ -56,18 +57,37 @@ const commonSubjects = [
   "Mathematics", "English", "Science", "Sinhala", "Tamil", "History", "Geography",
   "Religion", "Commerce", "ICT", "Art", "Drama", "Music", "Dancing", "Health Science", "Agriculture"
 ];
+
+const alsubjects = [
+  // Science
+  "Physics", "Chemistry", "Biology", "Combined Mathematics", "Agriculture", "ICT",
+
+  // Commerce
+  "Accounting", "Business Studies", "Economics", "Business Statistics",
+
+  // Arts
+  "Sinhala", "English", "Tamil", "Logic and Scientific Method", "Political Science",
+  "History", "Geography", "Buddhism", "Christianity", "Islam", "Hinduism",
+  "Media Studies", "Drama and Theatre", "Art", "Music", "Dancing", "Home Economics",
+
+  // Technology
+  "Engineering Technology", "Bio Systems Technology", "Science for Technology"
+];
+
 const alStreams = ["Physical Science", "Biological Science", "Commerce", "Arts", "Technology"];
+
 const proficiencyLevels = [
   { value: "basic", label: "Basic" },
   { value: "intermediate", label: "Intermediate" },
   { value: "fluent", label: "Fluent" },
   { value: "native", label: "Native" }
 ];
+
 const commonLanguages = [
   "Sinhala", "Tamil", "English", "Hindi", "French", "German", "Japanese", "Chinese", "Arabic", "Spanish"
 ];
 
-const AcademicCv = () => {
+const AcademicCV = () => {
   const [formData, setFormData] = useState(defaultFormData);
   const [isReview, setIsReview] = useState(false);
   const [colorTheme, setColorTheme] = useState(COLOR_THEMES[0]);
@@ -350,6 +370,7 @@ const AcademicCv = () => {
   const handleSkillsChange = (e) => {
     setFormData(prev => ({ ...prev, skills: e.target.value }));
   };
+  
   const handleInterestsChange = (e) => {
     setFormData(prev => ({ ...prev, interests: e.target.value }));
   };
@@ -494,6 +515,7 @@ const AcademicCv = () => {
                 </div>
               </div>
             </section>
+            
             {/* Education */}
             <section className="space-y-4">
               <div className="flex justify-between items-center">
@@ -538,6 +560,7 @@ const AcademicCv = () => {
                 ))
               )}
             </section>
+            
             {/* Professional Experience */}
             <section className="space-y-4">
               <div className="flex justify-between items-center">
@@ -582,6 +605,7 @@ const AcademicCv = () => {
                 ))
               )}
             </section>
+            
             {/* O/L Results */}
             <section className="space-y-4">
               <h2 className="text-xl font-semibold text-gray-800 border-b pb-2 border-gray-200">
@@ -629,6 +653,7 @@ const AcademicCv = () => {
                 </button>
               </div>
             </section>
+            
             {/* A/L Results */}
             <section className="space-y-4">
               <h2 className="text-xl font-semibold text-gray-800 border-b pb-2 border-gray-200">
@@ -665,7 +690,7 @@ const AcademicCv = () => {
                         <label className="block text-sm font-medium text-gray-700 mb-1">Subject <span className="text-red-500">*</span></label>
                         <select name="subject" value={result.subject} onChange={e => handleAlSubjectChange(index, e)} required className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                           <option value="">Select Subject</option>
-                          {commonSubjects.map((subject, i) => (
+                          {alsubjects.map((subject, i) => (
                             <option key={i} value={subject}>{subject}</option>
                           ))}
                         </select>
@@ -685,6 +710,7 @@ const AcademicCv = () => {
                 </button>
               </div>
             </section>
+            
             {/* Languages */}
             <section className="space-y-4">
               <h2 className="text-xl font-semibold text-gray-800 border-b pb-2 border-gray-200">
@@ -726,6 +752,7 @@ const AcademicCv = () => {
                 </button>
               </div>
             </section>
+            
             {/* Other Qualifications */}
             <section className="space-y-4">
               <div className="flex justify-between items-center">
@@ -766,6 +793,7 @@ const AcademicCv = () => {
                 ))
               )}
             </section>
+            
             {/* Skills & Interests */}
             <section className="space-y-4">
               <h2 className="text-xl font-semibold text-gray-800 border-b pb-2 border-gray-200">
@@ -780,6 +808,7 @@ const AcademicCv = () => {
                 <textarea name="interests" value={formData.interests} onChange={handleInterestsChange} rows={2} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Your hobbies and interests (e.g., Reading, Sports, Volunteering)" />
               </div>
             </section>
+            
             {/* References */}
             <section className="space-y-4">
               <div className="flex justify-between items-center">
@@ -832,6 +861,7 @@ const AcademicCv = () => {
                 ))
               )}
             </section>
+            
             {/* Submit Button */}
             <div className="pt-6">
               <button type="submit" className="w-full md:w-auto px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-800 text-white font-medium rounded-lg shadow-md hover:from-blue-700 hover:to-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all">
@@ -855,7 +885,7 @@ const AcademicCv = () => {
                 </button>
               ))}
               <PDFDownloadLink
-                document={<CVPDF formData={formData} colorTheme={colorTheme} />}
+                document={<CVPdf formData={formData} colorTheme={colorTheme} />}
                 fileName="cv.pdf"
                 className="ml-4 px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700"
               >
@@ -878,4 +908,4 @@ const AcademicCv = () => {
   );
 };
 
-export default AcademicCv;
+export default AcademicCV;

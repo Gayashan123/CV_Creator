@@ -8,7 +8,7 @@ const CvOption = () => {
   const options = [
     {
       id: "professional_ats",
-      title: "Professional ATS Format",
+      title: "Software IT Field ATS Format",
       description:
         "Optimized for applicant tracking systems with clean formatting and relevant sections.",
       icon: (
