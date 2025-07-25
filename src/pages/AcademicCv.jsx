@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import CVPreview from "./CVPreview";
 import { PDFDownloadLink } from '@react-pdf/renderer';
-import CVPdf from './CVPDF';
+import Cvpdf from './Cvpdf';
 
 // Theme palette
 const COLOR_THEMES = [
@@ -885,7 +885,7 @@ const AcademicCV = () => {
                 </button>
               ))}
               <PDFDownloadLink
-                document={<CVPdf formData={formData} colorTheme={colorTheme} />}
+                document={<Cvpdf formData={formData} colorTheme={colorTheme} />}
                 fileName="cv.pdf"
                 className="ml-4 px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700"
               >
