@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import CVPreview from "./CVPreview";
 import { PDFDownloadLink } from '@react-pdf/renderer';
-import CVPdf from './Cvpdf';
+import CVPdf from './CVPDF';
 
 // Theme palette
 const COLOR_THEMES = [
