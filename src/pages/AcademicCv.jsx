@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import CVPreview from "./Cvpreview";
+import CVPreview from "./CVPreview";
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import CVPdf from './Cvpdf';
 
