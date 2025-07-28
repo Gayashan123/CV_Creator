@@ -40,10 +40,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginBottom: 10,
   },
-  contactIcon: {
-    width: 20,
-    marginRight: 10,
-  },
   contactText: {
     fontSize: 10,
     opacity: 0.9,
@@ -61,7 +57,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
     marginBottom: 5,
     fontSize: 8,
-    backdropFilter: 'blur(5px)',
+    // Removed backdropFilter as it's unsupported in react-pdf
   },
   languageContainer: {
     marginBottom: 10,
@@ -84,6 +80,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.2)',
     borderRadius: 2,
     marginBottom: 10,
+    width: '100%',
   },
   progressFill: {
     height: '100%',
@@ -342,6 +339,7 @@ const styles = StyleSheet.create({
 
 // Helper function to convert proficiency text to width percentage
 const getProficiencyWidth = (proficiency) => {
+  if (!proficiency) return 50;
   switch (proficiency.toLowerCase()) {
     case 'native':
     case 'expert':
@@ -362,18 +360,17 @@ const getProficiencyWidth = (proficiency) => {
 
 const Cvpdf = ({ formData }) => {
   const {
-    personalDetails,
-    education,
-    professionalExperience,
-    olResults,
-    alResults,
-    languages,
-    
-    otherQualifications,
-    skills,
-    interests,
-    references,
-  } = formData;
+    personalDetails = {},
+    education = [],
+    professionalExperience = [],
+    olResults = {},
+    alResults = {},
+    languages = [],
+    otherQualifications = [],
+    skills = '',
+    interests = '',
+    references = [],
+  } = formData || {};
 
   const nameInitial = personalDetails.fullName ? personalDetails.fullName.charAt(0).toUpperCase() : '';
 
@@ -385,12 +382,14 @@ const Cvpdf = ({ formData }) => {
           {/* Avatar */}
           <View style={styles.avatarContainer}>
             {personalDetails.photoPreview ? (
-              <Image
-                src={personalDetails.photoPreview}
-                style={styles.avatar}
-              />
+              <Image src={personalDetails.photoPreview} style={styles.avatar} />
             ) : (
-              <View style={[styles.avatar, { justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.2)' }]}>
+              <View
+                style={[
+                  styles.avatar,
+                  { justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.2)' },
+                ]}
+              >
                 <Text style={{ fontSize: 36, fontWeight: 'bold', color: 'white' }}>{nameInitial}</Text>
               </View>
             )}
@@ -399,36 +398,32 @@ const Cvpdf = ({ formData }) => {
           {/* Contact */}
           <View style={{ marginBottom: 20 }}>
             <Text style={styles.sectionTitle}>CONTACT</Text>
-            
+
             <View style={styles.contactItem}>
-              
               <View>
                 <Text style={styles.contactLabel}>Phone</Text>
                 <Text style={styles.contactText}>{personalDetails.contactNumber}</Text>
               </View>
             </View>
-            
+
             <View style={styles.contactItem}>
-             
               <View>
                 <Text style={styles.contactLabel}>Email</Text>
                 <Text style={styles.contactText}>{personalDetails.email}</Text>
               </View>
             </View>
-            
+
             {personalDetails.address && (
               <View style={styles.contactItem}>
-                
                 <View>
                   <Text style={styles.contactLabel}>Address</Text>
                   <Text style={styles.contactText}>{personalDetails.address}</Text>
                 </View>
               </View>
             )}
-            
+
             {(personalDetails.nic || personalDetails.dateOfBirth) && (
               <View style={styles.contactItem}>
-                
                 <View>
                   <Text style={styles.contactLabel}>Details</Text>
                   <Text style={styles.contactText}>
@@ -442,7 +437,7 @@ const Cvpdf = ({ formData }) => {
           </View>
 
           {/* Skills */}
-          {skills && (
+          {skills && skills.trim() && (
             <View style={{ marginBottom: 20 }}>
               <Text style={styles.sectionTitle}>SKILLS</Text>
               <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
@@ -496,7 +491,7 @@ const Cvpdf = ({ formData }) => {
                 <View style={styles.sectionLine} />
                 <Text style={styles.sectionTitleMain}>EXPERIENCE</Text>
               </View>
-              
+
               <View>
                 {professionalExperience.map((exp, i) => (
                   <View key={i} style={styles.experienceItem}>
@@ -508,14 +503,15 @@ const Cvpdf = ({ formData }) => {
                     <Text style={styles.experienceCompany}>{exp.organization}</Text>
                     {exp.responsibilities && (
                       <View style={styles.bulletList}>
-                        {exp.responsibilities.split('\n').map((item, idx) => (
-                          item.trim() && (
-                            <View key={idx} style={styles.bulletItem}>
-                              <Text style={styles.bulletPoint}>•</Text>
-                              <Text style={styles.bulletText}>{item}</Text>
-                            </View>
-                          )
-                        ))}
+                        {exp.responsibilities.split('\n').map(
+                          (item, idx) =>
+                            item.trim() && (
+                              <View key={idx} style={styles.bulletItem}>
+                                <Text style={styles.bulletPoint}>•</Text>
+                                <Text style={styles.bulletText}>{item}</Text>
+                              </View>
+                            )
+                        )}
                       </View>
                     )}
                   </View>
@@ -531,7 +527,7 @@ const Cvpdf = ({ formData }) => {
                 <View style={styles.sectionLine} />
                 <Text style={styles.sectionTitleMain}>EDUCATION</Text>
               </View>
-              
+
               <View>
                 {education.map((edu, i) => (
                   <View key={i} style={styles.educationItem}>
@@ -558,29 +554,36 @@ const Cvpdf = ({ formData }) => {
                 <View style={styles.sectionLine} />
                 <Text style={styles.sectionTitleMain}>EXAM RESULTS</Text>
               </View>
-              
+
               {/* O/L Results */}
               {olResults.indexNo && (
                 <View style={{ marginBottom: 20 }}>
                   <Text style={styles.examTitle}>G.C.E. Ordinary Level ({olResults.year})</Text>
                   <Text style={styles.examDetails}>Index No: {olResults.indexNo}</Text>
-                  
+
                   <View style={styles.table}>
                     <View style={styles.tableHeader}>
                       <Text style={[styles.tableHeaderCell, { width: '70%' }]}>Subject</Text>
                       <Text style={[styles.tableHeaderCell, { width: '30%', textAlign: 'right' }]}>Grade</Text>
                     </View>
-                    
-                    {olResults.subjects.map((subj, i) => (
+
+                    {olResults.subjects?.map((subj, i) => (
                       <View key={i} style={styles.tableRow}>
                         <Text style={[styles.tableCell, { width: '70%' }]}>{subj.subject}</Text>
-                        <Text style={[styles.tableCell, { width: '30%', textAlign: 'right', fontWeight: 'bold' }]}>{subj.grade}</Text>
+                        <Text
+                          style={[
+                            styles.tableCell,
+                            { width: '30%', textAlign: 'right', fontWeight: 'bold' },
+                          ]}
+                        >
+                          {subj.grade}
+                        </Text>
                       </View>
                     ))}
                   </View>
                 </View>
               )}
-              
+
               {/* A/L Results */}
               {alResults.indexNo && (
                 <View>
@@ -588,17 +591,24 @@ const Cvpdf = ({ formData }) => {
                   <Text style={styles.examDetails}>
                     Index No: {alResults.indexNo} | Stream: {alResults.stream}
                   </Text>
-                  
+
                   <View style={styles.table}>
                     <View style={styles.tableHeader}>
                       <Text style={[styles.tableHeaderCell, { width: '70%' }]}>Subject</Text>
                       <Text style={[styles.tableHeaderCell, { width: '30%', textAlign: 'right' }]}>Grade</Text>
                     </View>
-                    
-                    {alResults.subjects.map((subj, i) => (
+
+                    {alResults.subjects?.map((subj, i) => (
                       <View key={i} style={styles.tableRow}>
                         <Text style={[styles.tableCell, { width: '70%' }]}>{subj.subject}</Text>
-                        <Text style={[styles.tableCell, { width: '30%', textAlign: 'right', fontWeight: 'bold' }]}>{subj.grade}</Text>
+                        <Text
+                          style={[
+                            styles.tableCell,
+                            { width: '30%', textAlign: 'right', fontWeight: 'bold' },
+                          ]}
+                        >
+                          {subj.grade}
+                        </Text>
                       </View>
                     ))}
                   </View>
@@ -614,7 +624,7 @@ const Cvpdf = ({ formData }) => {
                 <View style={styles.sectionLine} />
                 <Text style={styles.sectionTitleMain}>CERTIFICATIONS</Text>
               </View>
-              
+
               <View style={styles.certificationGrid}>
                 {otherQualifications.map((qual, i) => (
                   <View key={i} style={styles.certificationItem}>
@@ -636,7 +646,7 @@ const Cvpdf = ({ formData }) => {
                 <View style={styles.sectionLine} />
                 <Text style={styles.sectionTitleMain}>REFERENCES</Text>
               </View>
-              
+
               <View style={styles.referenceGrid}>
                 {references.map((ref, i) => (
                   <View key={i} style={styles.referenceItem}>
