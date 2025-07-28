@@ -368,6 +368,7 @@ const Cvpdf = ({ formData }) => {
     olResults,
     alResults,
     languages,
+    
     otherQualifications,
     skills,
     interests,
